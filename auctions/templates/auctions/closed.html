@@ -1,0 +1,42 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <div class="container-sm mt-4">
+        <h2 class="mb-4">Closed Listings</h2>
+        
+        <div class="row">
+            {% for list in listings %}
+            
+                <div class="col-12 col-md-6 col-lg-4 mb-4">
+                   
+                    <div class="card h-100">
+                        <!-- Image with responsive height for different screen sizes -->
+                        <img src="{{ list.image_url }}" class="card-img-top" alt="{{ list.title }}" style="height: 180px; object-fit: cover;">
+                        <div class="card-body">
+                            <!-- Card title -->
+                            <h5 class="card-title">{{ list.title }}</h5>
+
+                            <!-- Limited description text with truncation -->
+                            <p class="card-text text-truncate" style="max-height: 3rem; overflow: hidden;">
+                                {{ list.description }}
+                            </p>
+
+                            <!-- Current price -->
+                            <p class="card-text"><strong>Current Price:</strong> ${{ list.starting_bid }}</p>
+                     
+                            {% if list.current_bid and list.current_bid.bidder and list.current_bid.bidder.username == request.user.username %}
+    <h1 style="color: green;">YOU WON!!!</h1>
+{% endif %}
+
+                           
+                        </div>
+                    </div>
+                
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
+
+

@@ -1,0 +1,18 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1 class="mb-4">Categories</h1>
+    <div class="list-group">
+        {% for category in categories %}
+            <a href="{% url 'categories_listing' category.category %}" class="list-group-item list-group-item-action align-items-center">
+                {{ category.category }}
+                <span class="badge bg-danger text-white rounded-pill ms-5">{{ category.count }}</span>
+            </a>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+
+

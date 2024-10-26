@@ -1,0 +1,46 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Your Watchlist</h2>
+
+    {% if watch_count > 0 %}
+        <p class="text-center">You have <strong>{{ watch_count }}</strong> items in your watchlist:</p>
+        <div class="row">
+            {% for item in watch %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100">
+                        <img src="{{ item.image_url }}" class="card-img-top" alt="{{ item.title }}" style="height: 200px; object-fit: cover;">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ item.title }}</h5>
+                            <p class="card-text">
+                                <strong>Category:</strong> {{ item.category }}<br>
+                                <strong>Description:</strong> {{ item.description|truncatewords:20 }}<br>
+                                <strong>Starting Bid:</strong> ${{ item.starting_bid }}<br>
+                                <strong>Current Bid:</strong> 
+                                {% if item.current_bid %}
+                                    ${{ item.current_bid.amount }}
+                                {% else %}
+                                    No bids yet
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="card-footer text-center">
+                            <a href="{% url 'listing_detail' item.pk %}" class="btn btn-primary">View Listing</a>
+                            <form method="POST" action="{% url 'toggle_watchlist' item.pk %}" class="mt-2">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-outline-danger">Remove from Watchlist</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-center">Your watchlist is empty.</p>
+        <div class="text-center">
+            <a href="{% url 'index' %}" class="btn btn-success">Browse Auctions</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

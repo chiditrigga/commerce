@@ -1,0 +1,88 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1 class="mb-4">Create New Auction Listing</h1>
+
+    <!-- Start of the form -->
+    <form method="post" action="{% url 'create_listing' %}" class="needs-validation" >
+        {% csrf_token %}
+        
+        <!-- Row for form fields -->
+        <div class="row">
+            <div class="col-12 col-md-12">
+                <!-- Loop through form fields to add Bootstrap form control classes -->
+                 <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-group ">
+                            {{ form.title.label_tag }}
+                            {{ form.title }}
+                            <div class="invalid-feedback">
+                                Please provide a valid title.
+                            </div>
+                        </div>
+        
+                        <div class="form-group mt-3 ">
+                            {{ form.description.label_tag }}
+                            {{ form.description }}
+                            <div class="invalid-feedback">
+                                Please provide a valid description.
+                            </div>
+                        </div>
+                      </div>
+               
+
+
+                      <div class="col-md-6">
+                        <div class="form-group ">
+                            {{ form.starting_bid.label_tag }}
+                            {{ form.starting_bid }}
+                            <div class="invalid-feedback">
+                                Please provide a valid starting bid.
+                            </div>
+                        </div>
+        
+                        <div class="form-group mt-3">
+                            {{ form.image_url.label_tag }}
+                            {{ form.image_url }}
+                            <div class="invalid-feedback">
+                                Please provide a valid image URL.
+                            </div>
+                        </div>
+        
+                        <div class="form-group mt-3">
+                            {{ form.category.label_tag }}
+                            {{ form.category }}
+                            <div class="invalid-feedback">
+                                Please select a valid category.
+                            </div>
+                        </div>
+                          <!-- Submit button -->
+        <button type="submit" class="btn btn-primary mt-4">Create Listing</button>
+                      </div>
+                 </div>
+          
+
+          
+            </div>
+        </div>
+
+      
+    </form>
+    {% if form.errors %}
+    <div class="alert alert-danger">
+        <ul>
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <li>{{ field.label }}: {{ error }}</li>
+                {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+</div>
+{% endblock %}
+

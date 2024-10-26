@@ -1,0 +1,99 @@
+{% extends "auctions/layout.html" %}
+{% block body %}
+
+<div class="container mt-4">
+    <div class="row">
+        <!-- Image section -->
+        <div class="col-md-5 col-12 text-center mb-4">
+            <img src="{{ details.image_url }}" alt="{{ details.title }}" class="img-fluid rounded shadow" style="max-width: 100%; height: auto;">
+            {% if details.created_by.pk == request.user.pk %}
+            <a href="{% url 'active' details.id %}" class="btn btn-danger mt-3">Close Auction</a>
+            {% endif %}
+            {% if mode  %}
+            <a href="{% url 'toggle_watchlist' details.id %}" class="btn btn-danger mt-3">remove from watchlist</a>
+            {% else %}
+            <a href="{% url 'toggle_watchlist' details.id %}" class="btn btn-primary mt-3">add to watchlist</a>
+            {% endif %}
+            
+          
+        </div>
+
+        <!-- Details section -->
+        <div class="col-md-7 col-12">
+            <h2 class="font-weight-bold">{{ details.title }}</h2>
+            <p class="text-muted">{{ details.description }}</p>
+
+            <div class="mb-3">
+                <span class="badge bg-secondary">Category: {{ details.category }}</span>
+                <span class="badge bg-secondary">active: {{ details.is_active }}</span>
+                <span class="badge bg-info">Created By: {{ details.created_by }}</span>
+            </div>
+            <p class="h5"><strong>Current Price:</strong> ${{ details.starting_bid }}</p>
+            <p class="h5"><strong>Current Bid:</strong>
+                {% if details.current_bid %}
+                    ${{ details.current_bid.amount }} by {{ details.current_bid.bidder.username }}
+                {% else %}
+                    <span class="text-danger">No bids yet.</span>
+                {% endif %}
+            </p>
+            <!-- bid  -->
+            {% if user.is_authenticated %}
+            <p>
+                 {% if error %}
+                  <span style="color: red;">{{error}}</span> 
+                   {% endif  %}
+                <form action="{% url 'listing_detail' details.id %}" method="post">
+                    {% csrf_token %}
+                     {{bid_form}}
+                    <button type="submit" class="btn btn-danger">Bid</button>
+                </form>
+            </p>
+            {% else %}
+            <p>Please <a href="{% url 'login' %}">log in</a> to leave a comment.</p>
+            {% endif %}
+
+            <!-- Comment Form -->
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h4 class="card-title">Leave a Comment</h4>
+                    {% if user.is_authenticated %}
+                    <form action="{% url 'listing_detail' details.id %}" method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            {{ form.content }}  
+                            {% if form.content.errors %}
+                                <div class="text-danger">
+                                    {{ form.content.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit Comment</button>
+                    </form>
+                    {% else %}
+                    <p>Please <a href="{% url 'login' %}">log in</a> to leave a comment.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Comments Section -->
+            <div class="mt-4">
+                <h3 class="font-weight-bold">Comments</h3>
+                {% if comments %}
+                    <ul class="list-group">
+                        {% for comment in comments %}
+                        <li class="list-group-item">
+                            <strong>{{ comment.author.username }}</strong>
+                            <span class="text-muted small">- Posted on {{ comment.created_at|date:"F j, Y, g:i a" }}</span>
+                            <p class="mb-1">{{ comment.content }}</p>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <div class="alert alert-info">No comments yet. Be the first to comment!</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
